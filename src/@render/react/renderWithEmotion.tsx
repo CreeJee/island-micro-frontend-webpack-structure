@@ -2,7 +2,8 @@
 import { EmotionRenderModuleProps } from "../../types/structure";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
-import { PropsWithChildren, lazy, Suspense } from "react";
+import { PropsWithChildren } from "react";
+import { RenderModule as RenderPureReact } from "./render.js";
 
 export const RenderModule = ({
     loadingModule,
@@ -14,12 +15,11 @@ export const RenderModule = ({
       key:cacheKey,  
       container,
     })
-    const LazyModule = lazy(() => loadingModule);
     return (
       <CacheProvider value={cache}>
-        <Suspense fallback={<>{children}</>}>
-          <LazyModule />
-        </Suspense>
+        <RenderPureReact loadingModule={loadingModule}>
+          {children}
+        </RenderPureReact>
       </CacheProvider>
     );
 };

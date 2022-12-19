@@ -4,28 +4,49 @@ import type { MicrofrontendHostPluginOptions, RenderType } from "../types/plugin
 import { MountPageProps } from "../types/structure";
 import { RenderModule as RenderEmotion } from "./react/renderWithEmotion";
 import { RenderModule as RenderSuspense } from "./react/render";
-type FederationProps = MountPageProps &  MicrofrontendHostPluginOptions<"react"> & {
+import { useLayoutEffect, useRef } from "react";
+type FederationProps = Omit<MountPageProps,'mountDom'> &  MicrofrontendHostPluginOptions<"react"> & {
     indecator?: React.ReactNode
 }
 export const Render = async (
     props: FederationProps,
 ) => {
-    const { loadingModule, root, module, scope } = await requestMountPage(props);
-    const RenderNode = props.hasEmotion ? RenderEmotion : RenderSuspense;
-    const reactRoot = ReactDOM.createRoot(
-        root,
-        {
-            identifierPrefix: `${scope}/${module}`,
+    const domRootRef = useRef<HTMLDivElement>(null);
+    useLayoutEffect(() => {
+        let reactMounted:ReactDOM.Root | null = null;
+        const init = async () => {
+            if(!domRootRef.current) {
+                return;
+            }
+            const mountDom = domRootRef.current
+            const { loadingModule, root, module, scope } = await requestMountPage({
+                ...props,
+                mountDom
+            });
+            const RenderNode = props.hasEmotion ? RenderEmotion : RenderSuspense;
+            const reactRoot = ReactDOM.createRoot(
+                root,
+                {
+                    identifierPrefix: `${scope}/${module}`,
+                }
+            );
+            reactRoot.render(
+                <RenderNode  
+                    container={root}
+                    loadingModule={loadingModule}
+                    cacheKey={scope}
+                >
+                    {props.indecator}
+                </RenderNode >,
+            );
         }
-    );
-    reactRoot.render(
-        <RenderNode  
-            container={root}
-            loadingModule={loadingModule}
-            cacheKey={scope}
-        >
-            {props.indecator}
-        </RenderNode >,
-    );
+        init();
+        return () => {
+            if(reactMounted) {
+                reactMounted.unmount();
+            }
+        }
+    },[])
+    return <div ref={domRootRef}/>
 };
 export default Render;

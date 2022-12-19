@@ -22,15 +22,20 @@ export const requestMountPage = async ({mountDom,origin,module}:MountPageProps) 
     url = null,
     useShadowDom
   } = islandManifest;
-  const mountRoot = useShadowDom ? mountDom.attachShadow({mode: 'open'}) : mountDom;
+  
+  let usedModule: string;
+  
+  // https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Containment
+  mountDom.style.contain = "strict";
 
+  
+  const mountRoot = useShadowDom ? mountDom.attachShadow({mode: 'open'}) : mountDom;
   if(modules === null || scope === null || url === null) {
     throw new Error(`Error: not vaild island-manifest / path: ${origin}/island-manifest.json `);
   }
   if(modules.length < 1) {
     throw new Error(`loadable module is empty! / manifestInfo: ${JSON.stringify(islandManifest)} `)
   }
-  let usedModule: string;
   if(modules.length > 1) {
     if(!module) {
       throw new Error(`module is not found in manifest's modules! / manifestInfo: ${JSON.stringify(islandManifest)} `)
