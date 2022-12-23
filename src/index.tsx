@@ -1,3 +1,3 @@
 "use strong";
 export * from "./@render/react";
-export * from "./@webpack/useMicroFrontendHost"
+export * from "./@webpack/islandHost"

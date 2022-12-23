@@ -17,6 +17,6 @@ export interface EmotionRenderModuleProps extends RenderModuleProps {
 
 export interface MountPageProps {
     origin: string,
-    module?: string,
+    module: string,
     mountDom: HTMLElement
 }

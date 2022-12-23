@@ -135,7 +135,5 @@ dist
 *.d.ts.map
 *.js
 *.js.map
-src/!injectLoader.js
-src/!injectLoader.d.ts
-lib
-lib-es
+/lib
+/lib-es

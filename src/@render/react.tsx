@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom/client";
 import { requestMountPage } from "../lib/module";
-import type { MicrofrontendHostPluginOptions, RenderType } from "../types/plugins";
+import type { IslandHostPluginOptions, RenderType } from "../types/plugins";
 import { MountPageProps } from "../types/structure";
 import { RenderModule as RenderEmotion } from "./react/renderWithEmotion";
 import { RenderModule as RenderSuspense } from "./react/render";
 import { useLayoutEffect, useRef } from "react";
-type FederationProps = Omit<MountPageProps,'mountDom'> &  MicrofrontendHostPluginOptions<"react"> & {
+type FederationProps = Omit<MountPageProps,'mountDom'> & IslandHostPluginOptions<"react"> & {
     indecator?: React.ReactNode
 }
 export const Render = async (
@@ -15,10 +15,10 @@ export const Render = async (
     useLayoutEffect(() => {
         let reactMounted:ReactDOM.Root | null = null;
         const init = async () => {
-            if(!domRootRef.current) {
+            const mountDom = domRootRef.current
+            if(!mountDom) {
                 return;
             }
-            const mountDom = domRootRef.current
             const { loadingModule, root, module, scope } = await requestMountPage({
                 ...props,
                 mountDom

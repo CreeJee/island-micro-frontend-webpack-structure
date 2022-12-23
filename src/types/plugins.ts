@@ -5,7 +5,7 @@ type ModuleFederationPluginOptions = ConstructorParameters<typeof container.Modu
 type SharedObject = ModuleFederationPluginOptions['shared'];
 
 export type RenderType = "react" | "webComponents"
-interface PluginOptionsSet extends Record<RenderType, object> {
+interface RemoteOptionsSet extends Record<RenderType, object> {
     "react": {
         hasEmotion?: boolean,
     }
@@ -13,11 +13,13 @@ interface PluginOptionsSet extends Record<RenderType, object> {
     }
 }
 
-export type ModuleFederationDepsRecord = {
-    [K in RenderType]: (opts: PluginOptionsSet[K]) => SharedObject
+export type IslandHostDepsRecord = {
+    [K in RenderType]: (opts: RemoteOptionsSet[K]) => SharedObject
 }
-export type MicrofrontendHostPluginOptions<Type extends RenderType> =
-    PluginOptionsSet[Type] & {
+export type IslandHostPluginOptions<Type extends RenderType> =
+    RemoteOptionsSet[Type] & {
         type: Type,
-        moduleFederationOptions?: ModuleFederationPluginOptions
+        exposes?: ModuleFederationPluginOptions['exposes']
+        shared?: ModuleFederationPluginOptions['shared']
     }
+export type IslandRemotePluginOptions<Type extends RenderType> = RemoteOptionsSet[Type]

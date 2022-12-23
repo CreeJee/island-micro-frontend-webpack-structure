@@ -1,11 +1,12 @@
 
-import { name } from '../../package.json';
+import { name } from '../../../package.json';
 import { Compiler, container, } from "webpack"
-import { ModuleFederationDepsRecord, MicrofrontendHostPluginOptions, RenderType } from '../types/plugins';
+import { IslandHostDepsRecord, IslandHostPluginOptions, RenderType } from '../../types/plugins';
+import { getJSONFromRoot, readFromRoot } from '../../lib/fromRootFile';
 
 
 
-const OptRecord: ModuleFederationDepsRecord = {
+const OptRecord: IslandHostDepsRecord = {
     react({ hasEmotion }) {
         return {
             'react-dom': {
@@ -45,15 +46,19 @@ const OptRecord: ModuleFederationDepsRecord = {
 }
 
 export class MicrofrontendHostPlugin<Type extends RenderType> extends container.ModuleFederationPlugin {
-    constructor(opts: MicrofrontendHostPluginOptions<Type>) {
-        const moduleFederationOptions = opts.moduleFederationOptions ?? {}
+    constructor(opts: IslandHostPluginOptions<Type>) {
+        const { exposes,shared} = opts;
+        const json = getJSONFromRoot<{name: string}>("package.json");
+        if(!json) {
+            throw new Error(`package.json not found from your project`);
+        }
         super({
-            ...moduleFederationOptions,
-            name: moduleFederationOptions.name ?? name,
+            name,
             shared: {
                 ...OptRecord[opts.type](opts),
-                ...moduleFederationOptions.shared
+                ...shared
             },
+            exposes
         })
     }
 }

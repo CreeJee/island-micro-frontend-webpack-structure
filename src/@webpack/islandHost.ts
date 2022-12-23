@@ -1,9 +1,9 @@
-import type { Configuration } from "webpack"
-import type { MicrofrontendHostPluginOptions, RenderType } from "../types/plugins"
-import { MicrofrontendHostPlugin } from "./microFrontendHostPlugin"
+import { Configuration, library } from "webpack"
+import type { IslandHostPluginOptions, RenderType } from "../types/plugins"
+import { MicrofrontendHostPlugin } from "./plugin/microFrontendHostPlugin"
 export const useMicroFrontendHost = (
     config: Configuration,
-    microFrontendOpts: MicrofrontendHostPluginOptions<RenderType>
+    microFrontendOpts: IslandHostPluginOptions<RenderType>
 ) => {
     if (!Array.isArray(config.plugins)) {
         config.plugins = []
@@ -13,4 +13,11 @@ export const useMicroFrontendHost = (
         throw new Error("[@island/host] mount is will error, you should set publicPath manually");
     }
     config.plugins.push(new MicrofrontendHostPlugin(microFrontendOpts));
+    config.output = {
+        ...config.output, 
+        publicPath,
+        filename: '[name].js',
+        library: "islandRender",
+        uniqueName: "islandRender"
+    };
 }
