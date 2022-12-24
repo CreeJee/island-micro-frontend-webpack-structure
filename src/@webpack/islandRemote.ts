@@ -80,7 +80,11 @@ export const islandWebpackSetting = (
                 ...(match && typeof match.loader === 'object' ? match.loader : {}),
                 injectType: "styleTag",
 
-                styleTagTransform: function styleTagTransform (css: string, style: HTMLStyleElement) {
+                styleTagTransform: function styleTagTransform (
+                    css: string, 
+                    style: HTMLStyleElement,
+                    cssMedia:string = "all" // webpack
+                ) {
 
 
 
@@ -89,9 +93,12 @@ export const islandWebpackSetting = (
                     var moduleFederatonStyleKey = '@island/module-styles';
                     // @ts-ignore
                     var moduleStore = window[moduleFederatonStyleKey] as unknown as Record<string, Node>;
-                    var bindStyleTag = function (css: string, style?: HTMLStyleElement) {
+                    var bindStyleTag = function (css: string, style?: HTMLStyleElement,cssMedia?:string) {
                         if (!style) {
                             style = document.createElement("style");
+                        }
+                        if(cssMedia) {
+                            style.media = cssMedia;
                         }
                         style.innerHTML = css;
                         if (moduleStore && moduleNamespace) {
@@ -128,7 +135,7 @@ export const islandWebpackSetting = (
                             cssContent += "}";
                             cursorEnd += 1;
                             css = css.slice(0, cursorStart) + css.slice(cursorEnd);
-
+                            cssNode.media = cssMedia;
                             cssNode.innerHTML = cssContent;
                             document.head.appendChild(cssNode);
                         }
@@ -145,15 +152,14 @@ export const islandWebpackSetting = (
                                 var mediaQuery = matched[3];
                                 linkTag.rel = 'stylesheet';
                                 linkTag.type = 'text/css';
+                                linkTag.media = "none";
                                 if (url) {
                                     linkTag.href = url;
                                 }
-                                if (mediaQuery) {
-                                    linkTag.media = mediaQuery;
-                                }
                                 linkTag.addEventListener('load', function onLoadLinkTag() {
+                                    const style = document.createElement('style');
                                     // 재귀적으로 script 구조분해 후 특수 태그들에 따라 폰트 분리.
-                                    styleTagTransform(this.textContent ?? '',document.createElement('style'));
+                                    styleTagTransform(this.textContent ?? '',style,mediaQuery);
                                     this.remove();
                                     this.removeEventListener('load', onLoadLinkTag);
                                 })
@@ -162,7 +168,7 @@ export const islandWebpackSetting = (
                     }
 
                     // append style
-                    bindStyleTag(css, style)
+                    bindStyleTag(css, style,cssMedia)
                 }
             },
         }
