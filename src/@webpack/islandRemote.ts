@@ -93,7 +93,7 @@ export const islandWebpackSetting = (
                     var moduleFederatonStyleKey = '@island/module-styles';
                     // @ts-ignore
                     var moduleStore = window[moduleFederatonStyleKey] as unknown as Record<string, Node>;
-                    var bindStyleTag = function (css: string, style?: HTMLStyleElement,cssMedia?:string) {
+                    var bindStyleTag = function (css: string, style?: HTMLStyleElement, cssMedia?:string) {
                         if (!style) {
                             style = document.createElement("style");
                         }
@@ -209,11 +209,12 @@ export const cracoIslandPlugin = (
     modulefederationConfig: ModuleFederationConfig,
 ): CracoPlugin => ({
     overrideWebpackConfig({webpackConfig}){
-        return islandWebpackSetting(
+        islandWebpackSetting(
             webpackConfig,
             modulefederationConfig,
             config
         );
+        return webpackConfig;
     },
     overrideDevServerConfig: ({ devServerConfig }) => {
         devServerConfig.headers = {

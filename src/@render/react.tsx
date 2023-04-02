@@ -5,10 +5,14 @@ import { MountPageProps } from "../types/structure";
 import { RenderModule as RenderEmotion } from "./react/renderWithEmotion";
 import { RenderModule as RenderSuspense } from "./react/render";
 import { useLayoutEffect, useRef } from "react";
-type FederationProps = Omit<MountPageProps,'mountDom'> & IslandHostPluginOptions<"react"> & {
-    indecator?: React.ReactNode
-}
-export const Render = async (
+type FederationProps = (
+    Omit<MountPageProps,'mountDom'> & 
+    Omit<IslandHostPluginOptions<"react">,'type'> & 
+    {
+        indecator?: React.ReactNode
+    }
+)
+export const Render = (
     props: FederationProps,
 ) => {
     const domRootRef = useRef<HTMLDivElement>(null);

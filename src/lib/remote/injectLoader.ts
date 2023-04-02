@@ -52,8 +52,9 @@ function toMatchingLoader(
     };
 }
 
-function getLoaderRecursively(rules: LoaderUnion[], matcher:LoaderMatcher) : LoaderMatched{
-    let loader:LoaderMatched | null = null;
+function getLoaderRecursively(rules: LoaderUnion[], matcher:LoaderMatcher) : LoaderMatched | undefined {
+
+    let loader:LoaderMatched | undefined = undefined;
     rules.some((rule, index) => {
         if (rule) {
             if (matcher(rule)) {
@@ -66,16 +67,11 @@ function getLoaderRecursively(rules: LoaderUnion[], matcher:LoaderMatcher) : Loa
                     loader = getLoaderRecursively(ruleSet.use, matcher);
                 } else if (isArray(ruleSet.oneOf)) {
                     loader = getLoaderRecursively(ruleSet.oneOf, matcher);
-                } else {
-                    throw new Error(`Invalid rule`);   
                 }
             }
         }
         return loader !== undefined;
     });
-    if(loader === null) {
-        throw new Error("loader is not found!");
-    }
 
     return loader;
 }
@@ -89,7 +85,9 @@ export function getLoader(webpackConfig:WebpackConfig, matcher:LoaderMatcher) {
     return {
         isFound: matchingLoader !== undefined,
         match: matchingLoader
-    };
+    } as {isFound:true, match:LoaderMatched} | {isFound:false, match:undefined};
+
+
 }
 
 function getLoadersRecursively(
