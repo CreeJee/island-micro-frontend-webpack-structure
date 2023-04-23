@@ -1,4 +1,5 @@
 
+
 export interface IslandManifest {
     origin: string;
     url: string;
@@ -7,12 +8,11 @@ export interface IslandManifest {
     useShadowDom?: boolean
 };
 
+
 export interface RenderModuleProps {
-    loadingModule: Promise<any>,
-}
-export interface EmotionRenderModuleProps extends RenderModuleProps {
     cacheKey: string;
     container: Node
+    loadingModule: Promise<any>,
 }
 
 export interface MountPageProps {

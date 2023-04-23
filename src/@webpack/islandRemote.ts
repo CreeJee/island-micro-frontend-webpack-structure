@@ -8,6 +8,8 @@ import { WebpackConfig, ModuleFederationConfig, IslandPluginOptions, PageModuleS
 import { defaultOptions } from '../lib/remote/defaultOptions';
 import { getLoader, loaderByName, addBeforeLoader, removeLoaders } from '../lib/remote/injectLoader';
 import { IslandManifestPlugin } from './plugin/islandManifestPlugin';
+import compiler from "million/compiler"
+import { containerKey } from '../@initial/shadowStorage';
 
 type ContainerOptionsFormat<T> =
     | Record<string, string | string[] | T>
@@ -70,6 +72,9 @@ export const islandWebpackSetting = (
         moduleFederationContainer,
         new CssMinimizerPlugin(),
         new IslandManifestPlugin(mergedConfig),
+        compiler.webpack({
+            mode:'react',
+        })
     ];
 
     if (useShadowDom) {
@@ -89,8 +94,8 @@ export const islandWebpackSetting = (
 
 
                     //logic
-                    var moduleNamespace = process.env.KEY_MODE;
-                    var moduleFederatonStyleKey = '@island/module-styles';
+                    var moduleNamespace = process.env.MF_NAMESPACE;
+                    var moduleFederatonStyleKey = process.env.MF_CONTAINER_KEY;
                     // @ts-ignore
                     var moduleStore = window[moduleFederatonStyleKey] as unknown as Record<string, Node>;
                     var bindStyleTag = function (css: string, style?: HTMLStyleElement, cssMedia?:string) {
@@ -174,7 +179,8 @@ export const islandWebpackSetting = (
         }
         externalWebpackPlugins.push(
             new webpack.EnvironmentPlugin({
-                KEY_MODE: modulefederationConfig.name
+                MF_NAMESPACE:modulefederationConfig.name,
+                MF_CONTAINER_KEY: containerKey
             })
         );
         if (isFound) {

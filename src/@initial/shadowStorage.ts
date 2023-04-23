@@ -1,4 +1,4 @@
-const containerKey = "@island/module-styles";
+export const containerKey = "@island/module-styles";
 export interface WindowWithContainerStore extends Window {
     [containerKey]: Record<string, Node>;
 }

@@ -6,11 +6,8 @@ type SharedObject = ModuleFederationPluginOptions['shared'];
 
 export type RenderType = "react" | "webComponents"
 interface RemoteOptionsSet extends Record<RenderType, object> {
-    "react": {
-        hasEmotion?: boolean,
-    }
-    "webComponents": {
-    }
+    "react": {}
+    "webComponents": {}
 }
 
 export type IslandHostDepsRecord = {

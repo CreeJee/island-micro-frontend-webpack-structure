@@ -7,7 +7,7 @@ import { getJSONFromRoot, readFromRoot } from '../../lib/fromRootFile';
 
 
 const OptRecord: IslandHostDepsRecord = {
-    react({ hasEmotion }) {
+    react({  }) {
         return {
             'react-dom': {
                 eager: true,
@@ -19,25 +19,6 @@ const OptRecord: IslandHostDepsRecord = {
                 requiredVersion: false,
                 singleton: true,
             },
-            ...(hasEmotion ? {
-                "@emotion/cache": {
-                    eager: true,
-                    requiredVersion: false,
-                    singleton: true,
-                },
-                "@emotion/react": {
-                    eager: true,
-                    requiredVersion: false,
-                    singleton: true,
-                },
-                "@emotion/styled": {
-                    eager: true,
-                    requiredVersion: false,
-                    singleton: true,
-                },
-            } : {
-
-            })
         }
     },
     webComponents() {

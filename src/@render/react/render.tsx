@@ -1,15 +1,22 @@
 
-import { RenderModuleProps } from "../../types/structure";
-import { PropsWithChildren, lazy, Suspense } from "react";
+import { PropsWithChildren, lazy, Suspense, ReactNode } from "react";
+import { ReactRenderModuleProps } from "../../types/render/react";
 
+const DefaultWrapper = ({children}: {children:ReactNode}) => <>{children}</>
 export const RenderModule = ({
     loadingModule,
+    indecator,
     children,
-  }: PropsWithChildren<RenderModuleProps>) => {
+    wrapper: Wrapper = DefaultWrapper
+  }: PropsWithChildren<ReactRenderModuleProps>) => {
     const LazyModule = lazy(() => loadingModule);
     return (
-        <Suspense fallback={<>{children}</>}>
-          <LazyModule />
+      <Wrapper>
+        <Suspense fallback={indecator}>
+          <LazyModule>
+            {children}
+          </LazyModule>
         </Suspense>
+      </Wrapper>
     );
 };

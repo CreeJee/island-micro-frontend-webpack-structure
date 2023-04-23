@@ -1,9 +1,10 @@
 import { Configuration, library } from "webpack"
 import type { IslandHostPluginOptions, RenderType } from "../types/plugins"
 import { MicrofrontendHostPlugin } from "./plugin/microFrontendHostPlugin"
-export const useMicroFrontendHost = (
+import compiler from "million/compiler"
+export const useIslandHost = (
     config: Configuration,
-    microFrontendOpts: IslandHostPluginOptions<RenderType>
+    islandHostOpts: IslandHostPluginOptions<RenderType>
 ) => {
     if (!Array.isArray(config.plugins)) {
         config.plugins = []
@@ -12,7 +13,10 @@ export const useMicroFrontendHost = (
     if (publicPath === undefined || publicPath === 'auto') {
         throw new Error("[@island/host] mount is will error, you should set publicPath manually");
     }
-    config.plugins.push(new MicrofrontendHostPlugin(microFrontendOpts));
+    config.plugins.push(new MicrofrontendHostPlugin(islandHostOpts));
+    config.plugins.push(compiler.webpack({ 
+        mode: 'react', 
+    }));
     config.output = {
         ...config.output, 
         publicPath,

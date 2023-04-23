@@ -2,14 +2,15 @@ import ReactDOM from "react-dom/client";
 import { requestMountPage } from "../lib/module";
 import type { IslandHostPluginOptions, RenderType } from "../types/plugins";
 import { MountPageProps } from "../types/structure";
-import { RenderModule as RenderEmotion } from "./react/renderWithEmotion";
 import { RenderModule as RenderSuspense } from "./react/render";
 import { useLayoutEffect, useRef } from "react";
+import { ReactRenderModuleProps } from "../types/render/react";
 type FederationProps = (
     Omit<MountPageProps,'mountDom'> & 
     Omit<IslandHostPluginOptions<"react">,'type'> & 
     {
         indecator?: React.ReactNode
+        wrapper?: ReactRenderModuleProps['wrapper']
     }
 )
 export const Render = (
@@ -27,21 +28,20 @@ export const Render = (
                 ...props,
                 mountDom
             });
-            const RenderNode = props.hasEmotion ? RenderEmotion : RenderSuspense;
-            const reactRoot = ReactDOM.createRoot(
+            reactMounted = ReactDOM.createRoot(
                 root,
                 {
                     identifierPrefix: `${scope}/${module}`,
                 }
             );
-            reactRoot.render(
-                <RenderNode  
+            reactMounted.render(
+                <RenderSuspense  
                     container={root}
-                    loadingModule={loadingModule}
                     cacheKey={scope}
-                >
-                    {props.indecator}
-                </RenderNode >,
+                    loadingModule={loadingModule}
+                    wrapper={props.wrapper}
+                    indecator={props.indecator}
+                />
             );
         }
         init();
