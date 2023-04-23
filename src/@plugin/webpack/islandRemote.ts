@@ -1,15 +1,15 @@
-import webpack from 'webpack';
+import webpack, { Compiler } from 'webpack';
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import path from "path"
 // @ts-ignore
 import { parseOptions as parseOptionsOriginal } from "webpack/lib/container/options"
 import type {  CracoPlugin} from "@craco/types";
-import { WebpackConfig, ModuleFederationConfig, IslandPluginOptions, PageModuleStructure, IslandManifestContent } from '../lib/remote/@types';
-import { defaultOptions } from '../lib/remote/defaultOptions';
-import { getLoader, loaderByName, addBeforeLoader, removeLoaders } from '../lib/remote/injectLoader';
+import { WebpackConfig, ModuleFederationConfig, IslandPluginOptions, PageModuleStructure, IslandManifestContent } from '../../lib/remote/@types';
+import { defaultOptions } from '../../lib/remote/defaultOptions';
+import { getLoader, loaderByName, addBeforeLoader, removeLoaders } from './lib/injectLoader';
 import { IslandManifestPlugin } from './plugin/islandManifestPlugin';
-import compiler from "million/compiler"
-import { containerKey } from '../@initial/shadowStorage';
+import millionPlugin from "million/compiler"
+import { containerKey } from '../../@initial/shadowStorage';
 
 type ContainerOptionsFormat<T> =
     | Record<string, string | string[] | T>
@@ -22,11 +22,12 @@ const parseOptions = <T, R>(
 ): [string, R][] => parseOptionsOriginal(options, normalizeSimple, normalizeOptions);
 
 
-export const islandWebpackSetting = (
-    webpackConfig: WebpackConfig,
+export const useIslandRemote = (
+    compiler: Compiler,
     modulefederationConfig: ModuleFederationConfig,
     config: IslandPluginOptions,
 ) => {
+    const webpackConfig = compiler.options;
     const publicPath = webpackConfig.output?.publicPath;
     if (!publicPath) {
         throw new Error("publicPath is must be specified, if publicPath is auto, the main app will be Crashed");
@@ -72,7 +73,7 @@ export const islandWebpackSetting = (
         moduleFederationContainer,
         new CssMinimizerPlugin(),
         new IslandManifestPlugin(mergedConfig),
-        compiler.webpack({
+        millionPlugin.webpack({
             mode:'react',
         })
     ];
@@ -207,27 +208,3 @@ export const islandWebpackSetting = (
     }
     return webpackConfig;
 };
-export default islandWebpackSetting;
-
-
-export const cracoIslandPlugin = (
-    config: IslandPluginOptions,
-    modulefederationConfig: ModuleFederationConfig,
-): CracoPlugin => ({
-    overrideWebpackConfig({webpackConfig}){
-        islandWebpackSetting(
-            webpackConfig,
-            modulefederationConfig,
-            config
-        );
-        return webpackConfig;
-    },
-    overrideDevServerConfig: ({ devServerConfig }) => {
-        devServerConfig.headers = {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "*",
-          "Access-Control-Allow-Headers": "*",
-        };
-        return devServerConfig;
-    },
-})

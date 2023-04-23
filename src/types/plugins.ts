@@ -1,9 +1,7 @@
 
 
-import type { container, } from "webpack"
-type ModuleFederationPluginOptions = ConstructorParameters<typeof container.ModuleFederationPlugin>[0]
-type SharedObject = ModuleFederationPluginOptions['shared'];
 
+import type {Shared, SharedObject, Exposes} from './moduleFederation'
 export type RenderType = "react" | "webComponents"
 interface RemoteOptionsSet extends Record<RenderType, object> {
     "react": {}
@@ -16,7 +14,7 @@ export type IslandHostDepsRecord = {
 export type IslandHostPluginOptions<Type extends RenderType> =
     RemoteOptionsSet[Type] & {
         type: Type,
-        exposes?: ModuleFederationPluginOptions['exposes']
-        shared?: ModuleFederationPluginOptions['shared']
+        exposes?: Exposes
+        shared?: Shared
     }
 export type IslandRemotePluginOptions<Type extends RenderType> = RemoteOptionsSet[Type]

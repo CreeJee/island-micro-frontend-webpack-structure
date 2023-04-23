@@ -1,7 +1,8 @@
 import webpack, { WebpackPluginInstance } from "webpack";
-import { IslandManifestContent } from "../../lib/remote/@types";
-import { defaultOptions } from "../../lib/remote/defaultOptions";
+import { IslandManifestContent } from "../../../lib/remote/@types";
+import { defaultOptions } from "../../../lib/remote/defaultOptions";
 
+// @TODO: emit files to unplugins
 const { RawSource } = webpack.sources;
 export class IslandManifestPlugin implements WebpackPluginInstance {
     options: IslandManifestContent;

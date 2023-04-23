@@ -4,7 +4,7 @@
  * 
  * types by : https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/craco__craco/index.d.ts
  */
-import type { Configuration as WebpackConfig,  RuleSetRule, RuleSetUseItem } from 'webpack';
+import type { WebpackOptionsNormalized,  RuleSetRule, RuleSetUseItem } from 'webpack';
 export type LoaderUnion = RuleSetRule | RuleSetUseItem;
 export type LoaderMatcher = (rule: LoaderUnion) => boolean;
 export type LoaderMatched = {
@@ -76,7 +76,7 @@ function getLoaderRecursively(rules: LoaderUnion[], matcher:LoaderMatcher) : Loa
     return loader;
 }
 
-export function getLoader(webpackConfig:WebpackConfig, matcher:LoaderMatcher) {
+export function getLoader(webpackConfig:WebpackOptionsNormalized, matcher:LoaderMatcher) {
     const matchingLoader = getLoaderRecursively(
         webpackConfig?.module?.rules ?? [],
         matcher
@@ -120,7 +120,7 @@ function getLoadersRecursively(
 }
 
 export function getLoaders(
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher
 ) {
     const matchingLoaders:LoaderMatched[] = [];
@@ -170,7 +170,7 @@ function removeLoadersRecursively(
 }
 
 export function removeLoaders(
-    webpackConfig:WebpackConfig, 
+    webpackConfig:WebpackOptionsNormalized, 
     matcher:LoaderMatcher
 ) {
     const result = removeLoadersRecursively(webpackConfig?.module?.rules ?? [], matcher);
@@ -182,7 +182,7 @@ export function removeLoaders(
 }
 
 function addLoader(
-    webpackConfig:WebpackConfig, 
+    webpackConfig:WebpackOptionsNormalized, 
     matcher:LoaderMatcher,
     newLoader:LoaderUnion, 
     positionAdapter:PositionAdapter
@@ -203,18 +203,18 @@ function addLoader(
 }
 
 export const addBeforeLoader = (
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher, 
     newLoader:LoaderUnion
 ) => addLoader(webpackConfig, matcher, newLoader, x => x);
 export const addAfterLoader = (
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher, 
     newLoader:LoaderUnion
 ) => addLoader(webpackConfig, matcher, newLoader, x => x + 1);
 
 export function addLoaders(    
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher, 
     newLoader:LoaderUnion,
     positionAdapter:PositionAdapter
@@ -238,12 +238,12 @@ export function addLoaders(
 }
 
 export const addBeforeLoaders = (
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher, 
     newLoader:LoaderUnion,
 ) => addLoaders(webpackConfig, matcher, newLoader, x => x);
 export const addAfterLoaders = (
-    webpackConfig:WebpackConfig,
+    webpackConfig:WebpackOptionsNormalized,
     matcher:LoaderMatcher, 
     newLoader:LoaderUnion,
 ) => addLoaders(webpackConfig, matcher, newLoader, (x:number) => x + 1);
