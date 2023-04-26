@@ -16,7 +16,6 @@ export const useIslandHost = (
         throw new Error("[@island/host] mount is will error, you should set publicPath manually");
     }
     config.plugins.push(new container.ModuleFederationPlugin(createIslandHostOption(islandHostOpts)));
-    config.plugins.push(millionCompiler.webpack({mode:"react"}));
     config.output = {
         ...config.output, 
         publicPath,

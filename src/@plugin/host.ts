@@ -3,21 +3,30 @@ import { IslandHostPluginOptions, RenderType } from "../types/plugins";
 import { useIslandHost } from "./webpack/islandHost";
 
 import millionCompiler from "million/compiler"
-
-const millionOptions = {mode:"react"} as const;
-
-const webpackMillion = millionCompiler.webpack(millionOptions);
+import federation from "@originjs/vite-plugin-federation"
+import { createIslandHostOption } from "../lib/createIslandHostOption";
+import { mergeConfigs } from "./vite/lib/mergeConfigs";
+import { Compiler } from "webpack";
 export const hostPlugin = (islandOpts: IslandHostPluginOptions<RenderType>) => createUnplugin(() => {
-    return {
-        name : "@island/host",
-        webpack(compiler) {
-            webpackMillion.apply(compiler);
-            useIslandHost(compiler,islandOpts)
-        },
-        rspack(compiler) {
-            webpackMillion.apply(compiler);
-            useIslandHost(compiler,islandOpts)
-        },
-        
-    }
+    
+    const viteAlies = mergeConfigs([
+        federation(createIslandHostOption(islandOpts)),
+        {
+            name:'@island/host',
+    
+        }
+    ]);
+    const compileWebpack = (webpackCompiler: Compiler) => {
+        useIslandHost(webpackCompiler,islandOpts)
+    };
+    return [
+        millionCompiler.raw,
+        {
+            name : "@island/host",
+            webpack:compileWebpack,
+            rspack:compileWebpack,
+            vite:viteAlies,
+            rollup:viteAlies,
+        }
+    ]
 })

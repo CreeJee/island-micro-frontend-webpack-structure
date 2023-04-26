@@ -1,15 +1,14 @@
-import webpack, { Compiler } from 'webpack';
+import { container, Compiler, EnvironmentPlugin } from 'webpack';
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import path from "path"
 // @ts-ignore
 import { parseOptions as parseOptionsOriginal } from "webpack/lib/container/options"
-import type {  CracoPlugin} from "@craco/types";
-import { WebpackConfig, ModuleFederationConfig, IslandPluginOptions, PageModuleStructure, IslandManifestContent } from '../../lib/remote/@types';
+import { IslandPluginOptions, PageModuleStructure, IslandManifestContent } from '../../lib/remote/@types';
 import { defaultOptions } from '../../lib/remote/defaultOptions';
 import { getLoader, loaderByName, addBeforeLoader, removeLoaders } from './lib/injectLoader';
-import { IslandManifestPlugin } from './plugin/islandManifestPlugin';
-import millionPlugin from "million/compiler"
 import { containerKey } from '../../@initial/shadowStorage';
+import { PluginFederationOptions } from '../../types/moduleFederation';
+import { ModuleFederationConfig } from './types/federation';
 
 type ContainerOptionsFormat<T> =
     | Record<string, string | string[] | T>
@@ -24,7 +23,7 @@ const parseOptions = <T, R>(
 
 export const useIslandRemote = (
     compiler: Compiler,
-    modulefederationConfig: ModuleFederationConfig,
+    modulefederationConfig: PluginFederationOptions,
     config: IslandPluginOptions,
 ) => {
     const webpackConfig = compiler.options;
@@ -68,14 +67,12 @@ export const useIslandRemote = (
         }
     }
 
-    const moduleFederationContainer = new webpack.container.ModuleFederationPlugin(modulefederationConfig);
+    const moduleFederationContainer = new container.ModuleFederationPlugin(
+        modulefederationConfig as ModuleFederationConfig
+    );
     const externalWebpackPlugins = [
         moduleFederationContainer,
         new CssMinimizerPlugin(),
-        new IslandManifestPlugin(mergedConfig),
-        millionPlugin.webpack({
-            mode:'react',
-        })
     ];
 
     if (useShadowDom) {
@@ -179,7 +176,7 @@ export const useIslandRemote = (
             },
         }
         externalWebpackPlugins.push(
-            new webpack.EnvironmentPlugin({
+            new EnvironmentPlugin({
                 MF_NAMESPACE:modulefederationConfig.name,
                 MF_CONTAINER_KEY: containerKey
             })
