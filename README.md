@@ -23,4 +23,4 @@ Please make sure to update tests as appropriate.
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
-[MIT](https://github.com/web-widget/vite-plugin-shadow-dom-css)
+[vite-plugin-shadow-dom-css(MIT)](https://github.com/web-widget/vite-plugin-shadow-dom-css)
