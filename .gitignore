@@ -137,3 +137,5 @@ dist
 *.js.map
 /lib
 /lib-es
+
+!src/@plugin/vite/lib/runtime/style-provider-runtime.js

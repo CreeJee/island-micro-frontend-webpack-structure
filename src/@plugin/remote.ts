@@ -23,7 +23,6 @@ export const remotePlugin = createUnplugin((
         {
             name:'@island/remote',
             apply:'build',
-            
         }
     ]);
     const compileWebpack = (webpackCompiler: Compiler) => {

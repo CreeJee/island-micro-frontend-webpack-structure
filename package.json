@@ -46,5 +46,14 @@
   "dependencies": {},
   "directories": {
     "lib": "lib"
-  }
+  },
+  "keywords": [
+    "rollup-plugin-react",
+    "vite-plugin-react",
+    "webpack-plugin-react",
+    "rspack-plugin-react",
+    "unplugin-plugin-react",
+    "shadow-dom",
+    "module-federation"
+  ]
 }

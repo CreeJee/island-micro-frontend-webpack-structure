@@ -1,7 +1,9 @@
 import { Compiler, container } from "webpack"
 import type { IslandHostPluginOptions, RenderType } from "../../types/plugins"
 import { createIslandHostOption } from "../../lib/createIslandHostOption"
-import millionCompiler from "million/compiler"
+const ISLAND_HOST_WEBPACK_PUBLIC_ERROR = `[@island/host] mount is will error, you should set publicPath manually,
+We recommand publicPath set different value for [Development,Production] Environment`;
+
 
 export const useIslandHost = (
     compiler: Compiler,
@@ -13,7 +15,7 @@ export const useIslandHost = (
     }
     const publicPath = config.output?.publicPath;
     if (publicPath === undefined || publicPath === 'auto') {
-        throw new Error("[@island/host] mount is will error, you should set publicPath manually");
+        throw new Error(ISLAND_HOST_WEBPACK_PUBLIC_ERROR);
     }
     config.plugins.push(new container.ModuleFederationPlugin(createIslandHostOption(islandHostOpts)));
     config.output = {

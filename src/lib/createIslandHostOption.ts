@@ -3,6 +3,7 @@ import { name } from '../../package.json';
 import {  container, } from "webpack"
 import { IslandHostDepsRecord, IslandHostPluginOptions, RenderType } from '../types/plugins';
 import { getJSONFromRoot } from './fromRootFile';
+import { PluginFederationOptions, SharedObject } from '../types/moduleFederation';
 
 
 
@@ -25,7 +26,7 @@ const OptRecord: IslandHostDepsRecord = {
         return {}
     }
 }
-export const createIslandHostOption = <Type extends RenderType>(opts: IslandHostPluginOptions<Type>) => {
+export const createIslandHostOption = <Type extends RenderType>(opts: IslandHostPluginOptions<Type>):PluginFederationOptions => {
     const { exposes,shared } = opts;
         const json = getJSONFromRoot<{name: string}>("package.json");
         if(!json) {
@@ -37,6 +38,8 @@ export const createIslandHostOption = <Type extends RenderType>(opts: IslandHost
                 ...OptRecord[opts.type](opts),
                 ...shared
             },
-            exposes
+            exposes,
+            remoteType: "var",
+            filename:'islandRender',
         })
 }

@@ -89,8 +89,6 @@ export const useIslandRemote = (
                     cssMedia:string = "all" // webpack
                 ) {
 
-
-
                     //logic
                     var moduleNamespace = process.env.MF_NAMESPACE;
                     var moduleFederatonStyleKey = process.env.MF_CONTAINER_KEY;

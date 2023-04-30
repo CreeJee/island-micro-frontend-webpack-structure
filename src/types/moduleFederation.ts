@@ -184,7 +184,7 @@ interface LibraryOptions {
  * Container locations from which modules should be resolved and loaded at runtime. Property names are used as request scopes.
  */
  interface RemotesObject {
-  [index: string]: string | RemotesConfig | string[] | Promise<any>
+  [index: string]: string | RemotesConfig | string[]
 }
 
 /**
@@ -236,7 +236,8 @@ export interface SharedObject {
   /**
    * Provided module that should be provided to share scope. Also acts as fallback module if no shared module is found in share scope or version isn't valid. Defaults to the property name.
    */
-  import?: boolean
+  // webpack module-federation에서 지원X
+  // import?: boolean
 
   /**
    * Package name to determine required version from description file. This is only needed when package name can't be automatically determined from request.
@@ -278,8 +279,9 @@ export interface SharedObject {
    */
   version?: string | false
 
-  /**
-   * determine whether to include the shared in the chunk, true is included, false will not generate a shared chunk, only the remote side of the parameter is valid, the host side will definitely generate a shared chunk
-   */
+  // /**
+  //  * determine whether to include the shared in the chunk, true is included, false will not generate a shared chunk, only the remote side of the parameter is valid, the host side will definitely generate a shared chunk
+  //  */
+
   generate?: boolean
 }
